@@ -5,10 +5,10 @@ _image_library = {}
 
 
 class Titulo:
-    def __init__(self, imagen, pos):
+    def __init__(self, imagen, pos,z):
         self.image_titulo = imagen
         self.pos = pos
-
+        self.z = z
 
 class Wheel:
 
@@ -18,10 +18,13 @@ class Wheel:
         self.lista_nombre_imagenes_titulos = os.listdir(self.path_titulos)
         self.lista_titulos = []
         index = 0;
+        delta_z = 1/len(self.lista_nombre_imagenes_titulos);
+        z = delta_z;
         for nombre_imagen in self.lista_nombre_imagenes_titulos:
             imagen_titulo = self.get_image(os.path.join(self.path_titulos, nombre_imagen))
             # imagen_titulo = imagen_titulo.convert()
-            self.lista_titulos.append(Titulo(imagen_titulo, (600, index)))
+            self.lista_titulos.append(Titulo(imagen_titulo, (600, index)), z)
+            z += delta_z
             index += imagen_titulo.get_height()
 
     def get_image(self, path):

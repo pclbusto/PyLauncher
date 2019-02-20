@@ -5,7 +5,7 @@ _image_library = {}
 
 
 class Titulo:
-    def __init__(self, imagen, pos,z):
+    def __init__(self, imagen, pos, z):
         self.image_titulo = imagen
         self.pos = pos
         self.z = z
@@ -19,13 +19,14 @@ class Wheel:
         self.lista_titulos = []
         index = 0;
         delta_z = 1/len(self.lista_nombre_imagenes_titulos);
-        z = delta_z;
+        z = delta_z
+        print(len(self.lista_nombre_imagenes_titulos))
         for nombre_imagen in self.lista_nombre_imagenes_titulos:
             imagen_titulo = self.get_image(os.path.join(self.path_titulos, nombre_imagen))
             # imagen_titulo = imagen_titulo.convert()
-            self.lista_titulos.append(Titulo(imagen_titulo, (600, index)), z)
+            self.lista_titulos.append(Titulo(imagen_titulo, (500, index), z))
             z += delta_z
-            index += imagen_titulo.get_height()
+            index += int(imagen_titulo.get_height()*z/4)
 
     def get_image(self, path):
         global _image_library
@@ -39,7 +40,8 @@ class Wheel:
 
 if __name__ == "__main__":
     pygame.init()
-    screen = pygame.display.set_mode((int (pygame.display.Info().current_w/2), int(pygame.display.Info().current_h/2)))
+    # screen = pygame.display.set_mode((int (pygame.display.Info().current_w/2), int(pygame.display.Info().current_h/2)))
+    screen = pygame.display.set_mode((int (pygame.display.Info().current_w), int(pygame.display.Info().current_h)))
 
     w = Wheel()
     done = False
@@ -65,9 +67,18 @@ if __name__ == "__main__":
         # create a new, rotated Surface
 
         for imagen_titulo in w.lista_titulos:
-            pos = (imagen_titulo.pos[0], imagen_titulo.pos[1]+300)
-            screen.blit(imagen_titulo.image_titulo, pos)
+            pos = (imagen_titulo.pos[0], imagen_titulo.pos[1])
+            # rect = imagen_titulo.image_titulo.get_rect(center=(500, imagen_titulo.pos[1]+200))
+            rect = imagen_titulo.image_titulo.get_rect(center=(500, 200))
 
+            # print(rect.center)
+            imagen = pygame.transform.scale(imagen_titulo.image_titulo, (int(imagen_titulo.image_titulo.get_width()*imagen_titulo.z), int(imagen_titulo.image_titulo. get_height()*imagen_titulo.z)))
+            rect = imagen.get_rect(center=(500, imagen_titulo.pos[1]+100))
+
+        # imagen = imagen_titulo
+        # rect = imagen.get_rect(center=(900, 500))
+            screen.blit(imagen, rect)
+        # print("---------------------------------------")
         events = pygame.event.get()
         for event in events:
             keys = pygame.key.get_pressed()

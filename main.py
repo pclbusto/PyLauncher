@@ -1,5 +1,6 @@
 import pygame
 import os
+import numpy as np
 
 _image_library = {}
 
@@ -18,7 +19,7 @@ class Wheel:
         self.lista_nombre_imagenes_titulos = os.listdir(self.path_titulos)
         self.lista_titulos = []
         index = 0;
-        delta_z = 1/len(self.lista_nombre_imagenes_titulos);
+        delta_z = 360/len(self.lista_nombre_imagenes_titulos);
         z = delta_z
         print(len(self.lista_nombre_imagenes_titulos))
         for nombre_imagen in self.lista_nombre_imagenes_titulos:
@@ -26,7 +27,7 @@ class Wheel:
             # imagen_titulo = imagen_titulo.convert()
             self.lista_titulos.append(Titulo(imagen_titulo, (500, index), z))
             z += delta_z
-            index += int(imagen_titulo.get_height()*z/4)
+            index += int(imagen_titulo.get_height())
 
     def get_image(self, path):
         global _image_library
@@ -37,6 +38,13 @@ class Wheel:
             _image_library[path] = image
         return image
 
+    def get_points(self, radius, number_of_points):
+        radians_between_each_point = 2 * np.pi / number_of_points
+        list_of_points = []
+        for p in range(0, number_of_points):
+            list_of_points.append(
+                (radius * np.cos(p * radians_between_each_point), radius * np.sin(p * radians_between_each_point)))
+        return list_of_points
 
 if __name__ == "__main__":
     pygame.init()
@@ -53,6 +61,14 @@ if __name__ == "__main__":
     center = imagen_titulo.get_rect().center
     center = (center[0],center[1])
     scale=1
+    lista_puntos = w.get_points(400, len(w.lista_titulos))
+    lst_points = []
+    for punto in lista_puntos:
+        point = (punto[0]+400, punto[1]+400)
+        lst_points.append(point)
+
+    print("LISTA")
+    print(lst_points)
     print(center)
     while not done:
         for event in pygame.event.get():
@@ -66,14 +82,15 @@ if __name__ == "__main__":
         # angle %= 360
         # create a new, rotated Surface
 
-        for imagen_titulo in w.lista_titulos:
+        for index, imagen_titulo in  enumerate(w.lista_titulos):
             pos = (imagen_titulo.pos[0], imagen_titulo.pos[1])
             # rect = imagen_titulo.image_titulo.get_rect(center=(500, imagen_titulo.pos[1]+200))
             rect = imagen_titulo.image_titulo.get_rect(center=(500, 200))
 
             # print(rect.center)
-            imagen = pygame.transform.scale(imagen_titulo.image_titulo, (int(imagen_titulo.image_titulo.get_width()*imagen_titulo.z), int(imagen_titulo.image_titulo. get_height()*imagen_titulo.z)))
-            rect = imagen.get_rect(center=(500, imagen_titulo.pos[1]+100))
+            imagen = pygame.transform.scale(imagen_titulo.image_titulo, (int(imagen_titulo.image_titulo.get_width()/2),int( imagen_titulo.image_titulo.get_height()/2)))
+
+            rect = imagen.get_rect(center=(lst_points[index][0], lst_points[index][1]))
 
         # imagen = imagen_titulo
         # rect = imagen.get_rect(center=(900, 500))

@@ -45,7 +45,7 @@ class Wheel:
 
 if __name__ == "__main__":
     w = Wheel()
-    #os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0, 0)
+    #os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0, 0)11
     pygame.init()
     screen = pygame.display.set_mode( (800, 600),pygame.DOUBLEBUF)
     done = False

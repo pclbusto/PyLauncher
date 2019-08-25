@@ -24,7 +24,7 @@ class Wheel:
         print(self.lista_valores)
 
         #cargamos todas las imagenes del directorio
-        self.path_titulos = "plataforma\\snes\\titles"
+        self.path_titulos = "plataforma/snes/titles"
         self.lista_nombre_imagenes_titulos = os.listdir(self.path_titulos)
         self.lista_titulos = []
         #index = 0
@@ -47,20 +47,31 @@ if __name__ == "__main__":
     w = Wheel()
     #os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0, 0)11
     pygame.init()
-    screen = pygame.display.set_mode( (800, 600),pygame.DOUBLEBUF)
+
+    print(pygame.display.Info())
+    screen = pygame.display.set_mode( (800, 600), pygame.FULLSCREEN,32)
     done = False
     clock = pygame.time.Clock()
     angle = 0
     y = 0
     x = 0
     i = 0
+    imagen_titulo = w.lista_titulos[0].image_titulo
+    # imagen_titulo.pos = (200, w.lista_valores[i+index][1])
+    old_size = imagen_titulo.get_size()
+    new_size = (int(old_size[0] * 0.5), int(old_size[1] * 0.5))
+    image_res = pygame.transform.scale(imagen_titulo, new_size)
     while not done:
-        i=i+1
-        i=i%(500-len(w.lista_titulos))
+        i=i+0.5
+        i=i%(screen.get_size()[0])
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 done = True
+            elif event.type == pygame.KEYDOWN:
+                keys = pygame.key.get_pressed()
+                if keys[pygame.K_ESCAPE]:
+                    done = True
 
         screen.fill((0, 0, 0))
         # angle -= 0.01
@@ -69,15 +80,17 @@ if __name__ == "__main__":
         # angle %= 360
         # create a new, rotated Surface
 
-        for index,imagen_titulo in enumerate(w.lista_titulos):
-            imagen_titulo.pos = (200, w.lista_valores[i+index][1])
-            old_size = imagen_titulo.image_titulo.get_size()
-            new_size = (int(old_size[0]*w.lista_valores[i+index][0]),int(old_size[1]*w.lista_valores[i+index][0]))
-            print("viejo tama {}".format(old_size))
-            print("Nuevo tama {}".format(new_size))
-            print(i)
-            image_res = pygame.transform.scale(imagen_titulo.image_titulo,new_size)
-            screen.blit(image_res, imagen_titulo.pos)
+        # for index,imagen_titulo in enumerate(w.lista_titulos):
+        # imagen_titulo = w.lista_titulos[0].image_titulo
+        # imagen_titulo.pos = (200, w.lista_valores[i+index][1])
+        # old_size = imagen_titulo.get_size()
+        # new_size = (int(old_size[0]*0.5), int(old_size[1]*0.5))
+        #     print("viejo tama {}".format(old_size))
+        #     print("Nuevo tama {}".format(new_size))
+        #     print(i)
+        #     image_res = pygame.transform.scale(imagen_titulo.image_titulo,new_size)
+
+        screen.blit(image_res, (i, 300))
 
         pygame.display.flip()
-        clock.tick(60)
+        clock.tick(240)
